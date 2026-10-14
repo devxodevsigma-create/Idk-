@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<title>Play button</title>
+<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#ff6a5c"/><stop offset="1" stop-color="#d31620"/>
+</linearGradient></defs>
+<path d="M175.7,110.9 L348.3,225.1 Q395.0,256.0 348.3,286.9 L175.7,401.1 Q129.0,432.0 129.0,376.0 L129.0,136.0 Q129.0,80.0 175.7,110.9 Z" fill="#141414" stroke="#141414" stroke-width="76" stroke-linejoin="round"/>
+<path d="M175.7,110.9 L348.3,225.1 Q395.0,256.0 348.3,286.9 L175.7,401.1 Q129.0,432.0 129.0,376.0 L129.0,136.0 Q129.0,80.0 175.7,110.9 Z" fill="url(#g)"/>
+</svg>
