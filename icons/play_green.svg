@@ -1,8 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 <title>Play button</title>
-<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0" stop-color="#7ee35a"/><stop offset="1" stop-color="#1f9a33"/>
-</linearGradient></defs>
+<defs>
+<linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#6fe06a"/><stop offset="0.42" stop-color="#3fc653"/>
+<stop offset="0.52" stop-color="#6fe06a" stop-opacity="0.9"/><stop offset="0.62" stop-color="#3fc653"/>
+<stop offset="1" stop-color="#22a043"/>
+</linearGradient>
+<linearGradient id="side" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0b7e35" stop-opacity="0.75"/><stop offset="1" stop-color="#0b7e35"/>
+</linearGradient>
+<linearGradient id="glintT" gradientUnits="userSpaceOnUse" x1="153.0" y1="103.1" x2="244.7" y2="163.8">
+<stop offset="0" stop-color="#fff"/><stop offset="0.55" stop-color="#fff" stop-opacity="0.9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="glintL" gradientUnits="userSpaceOnUse" x1="153.0" y1="103.1" x2="153.0" y2="189.8">
+<stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+</linearGradient>
+</defs>
 <path d="M175.7,110.9 L348.3,225.1 Q395.0,256.0 348.3,286.9 L175.7,401.1 Q129.0,432.0 129.0,376.0 L129.0,136.0 Q129.0,80.0 175.7,110.9 Z" fill="#141414" stroke="#141414" stroke-width="76" stroke-linejoin="round"/>
-<path d="M175.7,110.9 L348.3,225.1 Q395.0,256.0 348.3,286.9 L175.7,401.1 Q129.0,432.0 129.0,376.0 L129.0,136.0 Q129.0,80.0 175.7,110.9 Z" fill="url(#g)"/>
+<path d="M175.7,110.9 L348.3,225.1 Q395.0,256.0 348.3,286.9 L175.7,401.1 Q129.0,432.0 129.0,376.0 L129.0,136.0 Q129.0,80.0 175.7,110.9 Z" fill="#0b7e35"/>
+<path d="M175.7,110.9 L348.3,225.1 Q395.0,256.0 348.3,286.9 L175.7,401.1 Q129.0,432.0 129.0,376.0 L129.0,136.0 Q129.0,80.0 175.7,110.9 Z" fill="url(#side)"/>
+<path d="M191.4,128.5 L333.1,222.2 Q371.4,247.6 333.1,273.0 L191.4,366.8 Q153.0,392.1 153.0,346.1 L153.0,149.1 Q153.0,103.1 191.4,128.5 Z" fill="url(#face)"/>
+<polygon points="162.6,109.4 244.7,163.8 180.4,136.8 156.0,119.4" fill="url(#glintT)"/>
+<polygon points="153.0,114.6 166.0,114.6 165.0,144.5 153.0,189.8" fill="url(#glintL)"/>
+<polygon points="165.3,111.2 160.8,110.9 153.0,117.8 175.8,125.9" fill="#fff"/>
+<polygon points="358.0,238.7 327.3,218.4 346.4,241.4" fill="#fff" opacity="0.7"/>
 </svg>
