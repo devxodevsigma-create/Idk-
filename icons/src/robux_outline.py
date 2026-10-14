@@ -9,9 +9,9 @@ Measurements are in the original 64x64 pixel grid.
 import math, os, sys
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "."
-T = float(sys.argv[2]) if len(sys.argv) > 2 else 20      # visible outline thickness (px @512)
+T = float(sys.argv[2]) if len(sys.argv) > 2 else 30      # visible outline thickness (px @512)
 S = 512
-SCALE = 7.0                                            # 64-grid units -> px
+SCALE = (S - 2 * T - 12) / 64                          # 64-grid units -> px (leaves room for the outline)
 C = 32.0                                               # icon centre in the 64 grid
 
 def hexagon(hw):
@@ -47,7 +47,9 @@ def svg(outline):
     under = ""
     if outline:
         under = (f'<g fill="#000" stroke="#000" stroke-width="{2 * T:g}" stroke-linejoin="round" '
-                 f'fill-rule="evenodd"><path d="{ring}"/><path d="{core}"/></g>')
+                 f'fill-rule="evenodd"><path d="{ring}"/><path d="{core}"/>'
+                 # the thick outline nearly closes the centre hole, so fill it solid black
+                 f'<path d="{rounded(square(5), 1)}"/></g>')
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {S} {S}">'
             f'<title>Hexagon coin</title>{under}'
             f'<g fill="#fff" fill-rule="evenodd"><path d="{ring}"/><path d="{core}"/></g></svg>\n')
