@@ -18,7 +18,7 @@ COLORS = {  # side (bevel), face light (top-left), face mid, face dark (bottom-r
     "white": ("#aeb8ca", "#ffffff", "#eef2f8", "#cfd6e3"),
     "black": ("#0e0f12", "#686d7a", "#40444d", "#24262c"),
     "red":   ("#9e0d16", "#ff7a6b", "#f2443c", "#c8161f"),
-    "green": ("#0b7e35", "#6fe06a", "#3fc653", "#22a043"),
+    "green": ("#2f9408", "#c2fc80", "#5cec18", "#3fbf0c"),  # bright cartoon lime
 }
 
 # vertices: left-top, right tip, left-bottom (centred on the canvas)
