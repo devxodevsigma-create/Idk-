@@ -1,10 +1,12 @@
 """Compose the Wash & Paint banner (1920x1080, no text) from the icon SVGs.
 
-Usage:  python3 banner.py [icons_dir] [out_dir]
+Usage:  python3 banner.py [icons_dir] [out_dir]      (needs: pip install shapely)
 Left half: paint theme with the roller. Right half: water theme with the pump
 water gun spraying toward the centre. Icons are embedded as nested SVGs.
 """
 import math, os, random, re, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from water_fx import make_spray, layers_svg
 
 ICONS = sys.argv[1] if len(sys.argv) > 1 else ".."
 OUT = sys.argv[2] if len(sys.argv) > 2 else "."
@@ -102,8 +104,8 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{
 <polyline points="{poly(divider)}" fill="none" stroke="{NAVY}" stroke-width="44" stroke-linejoin="round"/>
 <polyline points="{poly(divider)}" fill="none" stroke="#ffffff" stroke-width="20" stroke-linejoin="round"/>
 <rect width="{W}" height="{H}" fill="url(#vignette)"/>
-{icon("water_spray_tilted.svg", 815, 395, 600, rot=0, flip=True)}
 {icon("paint_roller_2.svg", 480, 540, 880)}
+{layers_svg(make_spray((1080, 512), (488, 262), 36, 86, bend=0.17, outline=24, seed=5), prefix="jet")}
 {icon("water_gun_2.svg", 1440, 560, 860, flip=True)}
 {icon("water_drop.svg", 1000, 205, 120, rot=-18)}
 {icon("water_drop.svg", 1095, 880, 90, rot=22)}
