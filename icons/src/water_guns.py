@@ -1,7 +1,8 @@
 """Generate chunky low-poly water gun icons as SVG (same style as paint_roller.py).
 
 Usage:  python3 water_guns.py [out_dir] ['{"roll": -14}']
-Writes water_gun_1.svg (rifle), water_gun_2.svg (pump), water_gun_3.svg (pistol).
+Writes water_gun_1.svg (rifle), water_gun_2.svg (pump), water_gun_3.svg (pistol),
+water_gun_4.svg (blue blaster).
 
 Each gun is a small 3D model made of bevelled extrusions, lathed tanks and
 barrels, tubes and flat decals. It is projected orthographically, flat-shaded
@@ -33,6 +34,7 @@ MAT = {
     "orange":  ("#ffb44a", "#ff8a1c", "#d45a08"),
     "dorange": ("#ff8a45", "#ec5a17", "#b03a0a"),
     "sky":     ("#86dcff", "#33b8f5", "#1580c4"),
+    "azure":   ("#72c4ff", "#2b8df2", "#1a5ec4"),
     "blue":    ("#6f97ff", "#2f6bff", "#1b43c0"),
     "royal":   ("#6a92ff", "#2e66ea", "#1a40ac"),
     "green":   ("#86f075", "#3fd24e", "#1f9a32"),
@@ -376,7 +378,46 @@ def gun3():
         g.add(seg)
     return g
 
-for i, build in enumerate((gun1, gun2, gun3), start=1):
+# =====================================================================
+# Gun 4: blue blaster with long yellow tank, rear pressure chamber and slotted pump
+# =====================================================================
+def gun4():
+    g = Gun()
+    Z = 0.32
+    # rear pressure chamber (yellow disc), orange collar, blue neck, hose elbow
+    g.add(xlathe(310, 263, [(310, 50), (318, 58), (362, 58), (370, 50)], "yellow"), bias=0.1)
+    g.add(xlathe(357, 265, [(357, 25), (385, 25)], "orange"), bias=0.15)
+    g.add(xlathe(380, 266, [(380, 16), (412, 16)], "azure"), bias=0.15)
+    for seg in tube_path(smooth([(334, 310), (334, 336), (350, 352)], 3), 10, "azure"):
+        g.add(seg, bias=-0.1)
+    g.add(ylathe(334, 330, [(-4, 13), (4, 13)], "orange"), bias=-0.05)
+    # long tank with strap, front mount
+    tank = g.add(xlathe(407, 271, [(407, 20), (440, 46), (645, 46), (667, 30)], "yellow"), bias=0.2)
+    g.add(strap(458, 271, 46, 20, "azure", thick=6), parent=tank)
+    g.add(box(rect(640, 307, 678, 345), -0.20, 0.20, "azure", chamfer=0.06), bias=0.1)
+    # body: rear block, main body, top ridge, yellow label
+    g.add(box(rect(347, 322, 404, 390), -0.30, 0.30, "azure", chamfer=0.07))
+    body = g.add(box(rect(398, 322, 650, 412), -Z, Z, "azure", chamfer=0.08))
+    g.add(decal(rect(502, 367, 575, 392), Z, "yellow"), parent=body)
+    g.add(box(rect(412, 316, 606, 340), -0.22, 0.22, "azure", bevel=0.04), bias=0.1)
+    # barrel, slotted pump, orange front plate, tip
+    g.add(xlathe(648, 382, [(648, 17), (868, 17)], "white"))
+    hg = g.add(box(rect(657, 362, 757, 422), -0.26, 0.26, "azure", chamfer=0.07), bias=0.6)  # wraps the barrel
+    for x in (668, 688, 708, 728):
+        g.add(decal(rect(x, 382, x + 11, 414), 0.26, "black"), parent=hg)
+    g.add(box(rect(755, 372, 768, 413), -0.21, 0.21, "orange", bevel=0.03), bias=0.6)
+    g.add(xlathe(866, 383, [(866, 20), (898, 20)], "orange"))
+    g.add(xlathe(897, 383, [(897, 5), (904, 5)], "black"))
+    # grip, base plate, red triggers, trigger guard
+    g.add(box([(442, 400), (497, 400), (474, 470), (416, 460)], -0.24, 0.24, "azure", chamfer=0.05))
+    g.add(box([(414, 450), (476, 466), (482, 490), (408, 476)], -0.27, 0.27, "azure", bevel=0.03))
+    g.add(box([(482, 404), (494, 404), (506, 466), (494, 468)], -0.04, 0.04, "red", bevel=0.012), bias=0.15)
+    g.add(box([(512, 404), (522, 404), (530, 426), (522, 428)], -0.035, 0.035, "red", bevel=0.01))
+    for seg in tube_path(smooth([(496, 408), (500, 438), (548, 438), (554, 410)], 3), 5, "azure"):
+        g.add(seg)
+    return g
+
+for i, build in enumerate((gun1, gun2, gun3, gun4), start=1):
     path = os.path.join(OUT, f"water_gun_{i}.svg")
     open(path, "w").write(build().svg())
     print("wrote", path)
