@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Roblox Stats</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script>
+    try {
+      const theme = localStorage.getItem('theme');
+      if (theme) document.documentElement.dataset.theme = theme;
+    } catch {}
+  </script>
+  <script type="module" src="/js/main.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#/">
+        <svg class="brand-mark" viewBox="0 0 20 20" aria-hidden="true">
+          <rect x="2" y="10" width="4" height="8" rx="1"></rect>
+          <rect x="8" y="6" width="4" height="12" rx="1"></rect>
+          <rect x="14" y="2" width="4" height="16" rx="1"></rect>
+        </svg>
+        Roblox Stats
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#/" data-nav="overview">Overview</a>
+        <a href="#/genres" data-nav="genres">Genres</a>
+        <a href="#/trends" data-nav="trends">Trends</a>
+      </nav>
+      <div class="topbar-end">
+        <span class="badge" id="source-badge" hidden>Mock data</span>
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch between light and dark mode">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2a8 8 0 1 0 0 16V2Z"></path><circle cx="10" cy="10" r="7.25" fill="none"></circle></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="filters">
+    <div class="filters-inner">
+      <div class="segmented" role="group" aria-label="Time range">
+        <button type="button" data-range="24h">24 hours</button>
+        <button type="button" data-range="7d">7 days</button>
+      </div>
+      <span class="updated" id="updated"></span>
+    </div>
+  </div>
+
+  <main id="view" class="view" tabindex="-1"></main>
+
+  <footer class="footer">Personal project · not affiliated with Roblox Corporation</footer>
+
+  <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+</body>
+</html>
