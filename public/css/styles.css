@@ -92,13 +92,13 @@ h1, h2, p { margin: 0; }
 .topbar-inner, .filters-inner, .view, .footer {
   max-width: 1200px;
   margin: 0 auto;
-  padding-left: var(--gutter);
-  padding-right: var(--gutter);
+  padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
 
 .topbar {
   position: sticky;
-  top: 0;
+  top: env(safe-area-inset-top, 0px);
   z-index: 20;
   background: var(--page);
   border-bottom: 1px solid var(--border);
