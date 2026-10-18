@@ -103,7 +103,7 @@ export async function overviewView({ range }) {
     columns: [
       { label: 'Game', render: (game) => gameCell(game) },
       { label: 'Playing', numeric: true, render: (game) => compact(game.playing) },
-      { label: 'Change', numeric: true, render: (game) => delta(game.change) },
+      { label: 'Change', numeric: true, render: (game) => delta(game.change, { isNew: game.isNew }) },
     ],
   }));
 

@@ -33,20 +33,20 @@ export function createApp() {
     try {
       if (req.method !== 'GET') return sendJson(res, 405, { error: 'Method not allowed' });
       const url = new URL(req.url, 'http://localhost');
-      if (url.pathname.startsWith('/api/')) return handleApi(url, res);
+      if (url.pathname.startsWith('/api/')) return await handleApi(url, res);
       return await serveStatic(url.pathname, res);
     } catch (error) {
-      console.error(error);
-      return sendJson(res, 500, { error: error.message });
+      if (!error.status) console.error(error);
+      return sendJson(res, error.status ?? 500, { error: error.message });
     }
   });
 }
 
-function handleApi(url, res) {
+async function handleApi(url, res) {
   for (const [pattern, handler] of API_ROUTES) {
     const match = url.pathname.match(pattern);
     if (!match) continue;
-    const store = getStore();
+    const store = await getStore();
     const body = handler(store, url.searchParams, ...match.slice(1));
     if (!body) return sendJson(res, 404, { error: 'Not found' });
     return sendJson(res, 200, { source: store.source, ...body });

@@ -1,15 +1,18 @@
 {
   "name": "roblox-stats",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Personal dashboard for tracking the most popular genres and trends on Roblox.",
   "type": "module",
   "scripts": {
     "start": "node server/index.js",
     "dev": "node --watch server/index.js",
-    "test": "node --test"
+    "live": "node --disable-warning=ExperimentalWarning server/index.js --live",
+    "collect": "node --disable-warning=ExperimentalWarning server/cli/collect.js",
+    "track": "node --disable-warning=ExperimentalWarning server/cli/track.js",
+    "test": "node --disable-warning=ExperimentalWarning --test"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13"
   }
 }

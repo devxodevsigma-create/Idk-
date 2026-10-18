@@ -11,8 +11,9 @@ export function card({ title, subtitle, footer, className }, ...body) {
 }
 
 // Signed change with an arrow, so direction never relies on color alone.
-export function delta(change) {
-  if (change == null) return h('span', { class: 'delta delta-new' }, 'New');
+// No change value means there's nothing to compare against: "New" for fresh releases, "—" otherwise.
+export function delta(change, { isNew = false } = {}) {
+  if (change == null) return h('span', { class: 'delta delta-new' }, isNew ? 'New' : '—');
   const direction = change > 0.0005 ? 'up' : change < -0.0005 ? 'down' : 'flat';
   const arrow = { up: '▲', down: '▼', flat: '●' }[direction];
   return h('span', { class: `delta delta-${direction}` }, h('span', { 'aria-hidden': 'true' }, arrow), ' ', signedPercent(change));
@@ -38,11 +39,19 @@ export function dataTable({ columns, rows, caption }) {
 
 export function gameCell(game, { showGenre = true } = {}) {
   const meta = [showGenre ? game.genreName : game.subgenre, game.creator].filter(Boolean).join(' · ');
-  return h('div', { class: 'game' },
-    h('span', { class: 'game-icon', 'aria-hidden': 'true' }, game.name.trim().charAt(0) || '?'),
-    h('div', { class: 'game-text' },
-      h('div', { class: 'game-name', title: game.name }, game.name),
-      h('div', { class: 'game-meta' }, meta)));
+  const icon = game.iconUrl
+    ? h('img', { class: 'game-icon', src: game.iconUrl, alt: '', width: 32, height: 32, loading: 'lazy' })
+    : h('span', { class: 'game-icon', 'aria-hidden': 'true' }, game.name.trim().charAt(0) || '?');
+  const name = game.placeId
+    ? h('a', {
+      class: 'game-name',
+      href: `https://www.roblox.com/games/${game.placeId}`,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      title: `Open ${game.name} on Roblox`,
+    }, game.name)
+    : h('div', { class: 'game-name', title: game.name }, game.name);
+  return h('div', { class: 'game' }, icon, h('div', { class: 'game-text' }, name, h('div', { class: 'game-meta' }, meta)));
 }
 
 export function pageHeader({ title, description, crumbs }) {

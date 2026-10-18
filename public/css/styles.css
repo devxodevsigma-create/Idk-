@@ -78,6 +78,7 @@ body {
 
 a { color: inherit; }
 h1, h2, p { margin: 0; }
+[hidden] { display: none !important; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -388,8 +389,12 @@ a.multiple:hover { border-color: var(--axis); }
   font-size: 0.85rem;
 }
 
+img.game-icon { object-fit: cover; }
+
 .game-text { min-width: 0; }
-.game-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.game-name { display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+a.game-name { text-decoration: none; }
+a.game-name:hover { text-decoration: underline; }
 .game-meta { color: var(--ink-2); font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- Bar list (horizontal bars, value at the tip) ---------- */

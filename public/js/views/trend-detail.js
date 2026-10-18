@@ -34,7 +34,7 @@ export async function trendDetailView({ range, args: [keyword] }) {
     columns: [
       { label: 'Game', render: (game) => gameCell(game) },
       { label: 'Playing', numeric: true, render: (game) => compact(game.playing) },
-      { label: 'Change', numeric: true, render: (game) => delta(game.change) },
+      { label: 'Change', numeric: true, render: (game) => delta(game.change, { isNew: game.isNew }) },
       { label: 'Released', numeric: true, className: 'hide-narrow', render: (game) => age(game.created) },
     ],
   }));

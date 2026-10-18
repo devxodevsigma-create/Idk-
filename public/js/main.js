@@ -51,9 +51,10 @@ async function render() {
     }
   } catch (error) {
     if (id !== renderId) return;
-    view.replaceChildren(error.status === 404
-      ? emptyState('Not found', 'There is no data for this page.')
-      : emptyState('Something went wrong', error.message));
+    badge.hidden = true;
+    const titles = { 404: 'Not found', 503: 'No data yet' };
+    view.replaceChildren(emptyState(titles[error.status] ?? 'Something went wrong',
+      error.status === 404 ? 'There is no data for this page.' : error.message));
   } finally {
     if (id === renderId) view.classList.remove('is-loading');
   }

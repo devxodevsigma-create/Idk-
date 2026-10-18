@@ -11,6 +11,10 @@ const MOVER_MIN_SHARE = 0.02;
 const RISING_MIN_PLAYERS = 1000;
 const SPARK_POINTS = 30;
 
+// Bucket for games whose genre Roblox didn't report (only appears when needed).
+export const UNCLASSIFIED = { id: 'unclassified', name: 'Unclassified', subgenres: [] };
+const genreOf = (game) => (genreById.has(game.genre) ? game.genre : UNCLASSIFIED.id);
+
 export function parseRange(value) {
   return Object.hasOwn(RANGES, value) ? value : '24h';
 }
@@ -28,7 +32,13 @@ function context(store, range) {
     const before = series[0] ?? 0;
     return { ...game, keywords: extractKeywords(game.name), series, playing, before, change: pctChange(playing, before) };
   });
-  return { range, times: timeline.slice(start), now: timeline.at(-1), games };
+  return {
+    range,
+    times: timeline.slice(start),
+    now: timeline.at(-1),
+    updatedAt: store.lastPolled ?? timeline.at(-1),
+    games,
+  };
 }
 
 function rollup(games, ctx) {
@@ -59,29 +69,38 @@ function byPlaying(a, b) {
   return b.playing - a.playing;
 }
 
-function gameSummary(game) {
+// Released inside the selected window.
+const isNew = (game, ctx) => Date.parse(game.created) >= ctx.times[0];
+
+function gameSummary(game, ctx) {
   return {
     id: game.id,
+    placeId: game.rootPlaceId ?? null,
     name: game.name,
-    genre: game.genre,
-    genreName: genreById.get(game.genre)?.name ?? null,
+    genre: genreOf(game),
+    genreName: genreById.get(game.genre)?.name ?? UNCLASSIFIED.name,
     subgenre: game.subgenre,
     creator: game.creator.name,
     created: game.created,
+    iconUrl: game.iconUrl ?? null,
     playing: game.playing,
     change: game.change,
-    isNew: game.before === 0 && game.playing > 0,
+    isNew: isNew(game, ctx),
   };
 }
 
 function meta(ctx) {
-  return { range: ctx.range, updatedAt: new Date(ctx.now).toISOString() };
+  return { range: ctx.range, updatedAt: new Date(ctx.updatedAt).toISOString() };
+}
+
+function genreList(ctx) {
+  return ctx.games.some((game) => genreOf(game) === UNCLASSIFIED.id) ? [...GENRES, UNCLASSIFIED] : GENRES;
 }
 
 function genreRows(ctx) {
   const total = ctx.games.reduce((sum, game) => sum + game.playing, 0);
-  return GENRES.map((genre) => {
-    const games = ctx.games.filter((game) => game.genre === genre.id);
+  return genreList(ctx).map((genre) => {
+    const games = ctx.games.filter((game) => genreOf(game) === genre.id);
     const r = rollup(games, ctx);
     const top = maxBy(games, (game) => game.playing);
     return {
@@ -142,12 +161,13 @@ export const TREND_SORTS = {
 };
 
 function risingGames(ctx, limit = 8) {
-  const score = (game) => game.change ?? Infinity; // brand-new games first
+  // Brand-new games first; games with no earlier count to compare against last.
+  const score = (game) => (isNew(game, ctx) ? Infinity : game.change ?? -Infinity);
   return ctx.games
     .filter((game) => game.playing >= RISING_MIN_PLAYERS)
     .sort((a, b) => score(b) - score(a))
     .slice(0, limit)
-    .map(gameSummary);
+    .map((game) => gameSummary(game, ctx));
 }
 
 export function overview(store, range) {
@@ -181,10 +201,12 @@ export function genres(store, range) {
 }
 
 export function genreDetail(store, range, id) {
-  const genre = genreById.get(id);
+  const genre = id === UNCLASSIFIED.id ? UNCLASSIFIED : genreById.get(id);
   if (!genre) return null;
   const ctx = context(store, range);
-  const games = ctx.games.filter((game) => game.genre === id);
+  const row = genreRows(ctx).find((r) => r.id === id);
+  if (!row) return null;
+  const games = ctx.games.filter((game) => genreOf(game) === id);
   const total = rollup(games, ctx);
 
   const subgenres = genre.subgenres
@@ -196,10 +218,10 @@ export function genreDetail(store, range, id) {
 
   return {
     ...meta(ctx),
-    genre: genreRows(ctx).find((row) => row.id === id),
+    genre: row,
     series: points(total.series, ctx.times),
     subgenres,
-    games: games.sort(byPlaying).slice(0, 25).map(gameSummary),
+    games: games.sort(byPlaying).slice(0, 25).map((game) => gameSummary(game, ctx)),
   };
 }
 
@@ -221,8 +243,8 @@ export function trendDetail(store, range, keyword) {
   if (games.length < MIN_TREND_GAMES) return null;
 
   const row = trendRow(word, games, ctx);
-  const genreMix = GENRES.map((genre) => {
-    const inGenre = games.filter((game) => game.genre === genre.id);
+  const genreMix = genreList(ctx).map((genre) => {
+    const inGenre = games.filter((game) => genreOf(game) === genre.id);
     const playing = inGenre.reduce((sum, game) => sum + game.playing, 0);
     return { id: genre.id, name: genre.name, games: inGenre.length, playing, share: row.playing ? playing / row.playing : 0 };
   })
@@ -234,6 +256,6 @@ export function trendDetail(store, range, keyword) {
     trend: row,
     series: points(rollup(games, ctx).series, ctx.times),
     genres: genreMix,
-    games: games.sort(byPlaying).slice(0, 25).map(gameSummary),
+    games: games.sort(byPlaying).slice(0, 25).map((game) => gameSummary(game, ctx)),
   };
 }

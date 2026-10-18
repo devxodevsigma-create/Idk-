@@ -25,7 +25,9 @@ export async function genreDetailView({ range, args: [id] }) {
         meta: delta(sub.change),
         tooltip: () => tooltipRows(`${full(sub.playing)} playing`, `${sub.name} · ${sub.games} games`),
       })))
-      : h('p', { class: 'note' }, 'Roblox doesn’t define subgenres for this genre.'));
+      : h('p', { class: 'note' }, genre.id === 'unclassified'
+        ? 'These games don’t report a Roblox genre, so they have no subgenres either.'
+        : 'Roblox doesn’t define subgenres for this genre.'));
 
   const gamesCard = card({ title: 'Top games', subtitle: `Most played ${genre.name} games right now` },
     games.length
@@ -36,7 +38,7 @@ export async function genreDetailView({ range, args: [id] }) {
           { label: '#', className: 'rank hide-narrow', render: (_, i) => i + 1 },
           { label: 'Game', render: (game) => gameCell(game, { showGenre: false }) },
           { label: 'Playing', numeric: true, render: (game) => compact(game.playing) },
-          { label: 'Change', numeric: true, render: (game) => delta(game.change) },
+          { label: 'Change', numeric: true, render: (game) => delta(game.change, { isNew: game.isNew }) },
           { label: 'Released', numeric: true, className: 'hide-narrow', render: (game) => age(game.created) },
         ],
       })
